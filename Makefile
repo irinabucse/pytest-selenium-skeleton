@@ -2,7 +2,7 @@ all:
 	source env/bin/activate
 run:
 	@echo "Running tests"
-	pytest ./src/Tests/test_abc.py --alluredir=./results
+	pytest ./src/Tests/ --alluredir=./results
 
 generate:
 	@echo "Generating allure reports..."
