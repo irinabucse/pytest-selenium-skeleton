@@ -10,8 +10,8 @@ from selenium.webdriver.common.action_chains import ActionChains
 import unittest, time, logging, os, inspect
 from .BaseLogger import BaseLogger
 
-from .DriverFactory import DriverFactory
-from .PageFactory import PageFactory
+from src.Framework.DriverFactory import DriverFactory
+# from src.Framework.PageFactory import PageFactory
 
 
 class Borg:
@@ -33,6 +33,7 @@ class Borg:
 
 # Get the Base URL from the conf file
 base_url = os.getenv('base_url')
+
 
 class BasePage(Borg, unittest.TestCase):
     "Page class that all page models can inherit from"
@@ -75,9 +76,9 @@ class BasePage(Borg, unittest.TestCase):
         "Return the failure message list"
         return self.failure_message_list
 
-    def switch_page(self, page_name):
-        "Switch the underlying class to the required Page"
-        self.__class__ = PageFactory.get_page_object(page_name, base_url=self.base_url).__class__
+    # def switch_page(self, page_name):
+    #     "Switch the underlying class to the required Page"
+    #     self.__class__ = PageFactory.get_page_object(page_name, base_url=self.base_url).__class__
 
     def register_driver(self, remote_flag, os_name, os_version, browser, browser_version, remote_project_name,
                         remote_build_name):
@@ -317,7 +318,7 @@ class BasePage(Borg, unittest.TestCase):
                 self.write("Check your locator-'%s,%s' in the conf/locators.conf file" % (locator[0], locator[1]))
             self.exceptions.append(
                 "Unable to locate the element with the xpath -'%s,%s' in the conf/locators.conf file" % (
-                locator[0], locator[1]))
+                    locator[0], locator[1]))
 
         return dom_elements
 
@@ -529,7 +530,7 @@ class BasePage(Borg, unittest.TestCase):
             self.conditional_write(result_flag,
                                    positive='Located the element: %s' % locator,
                                    negative='Could not locate the element %s even after %.1f seconds' % (
-                                   locator, wait_seconds))
+                                       locator, wait_seconds))
 
         return result_flag
 

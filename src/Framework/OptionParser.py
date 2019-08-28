@@ -3,10 +3,9 @@ Class to wrap around parsing command line options
 """
 import os, sys
 import optparse
-from conf import base_url_conf as conf
 
 
-class Option_Parser:
+class OptionParser:
     "The option parser class"
 
     def __init__(self,
@@ -25,11 +24,11 @@ class Option_Parser:
                                help="Browser. Valid options are firefox, ie and chrome")
         self.parser.add_option("-U", "--app_url",
                                dest="url",
-                               default=conf.base_url,
+                               default='http://localhost:8080',
                                help="The url of the application")
         self.parser.add_option("-A", "--api_url",
                                dest="api_url",
-                               default="http://localhost/",
+                               default="http://localhost:8081/",
                                help="The url of the api")
         self.parser.add_option("-O", "--os_version",
                                dest="os_version",
