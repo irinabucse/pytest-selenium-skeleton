@@ -1,6 +1,6 @@
 import allure
 
-from src.Framework.BasePage import BasePage
+from framework.base_page import BasePage
 
 
 class Homepage:

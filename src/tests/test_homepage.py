@@ -1,7 +1,7 @@
 import unittest
 
-from src.Framework.PageFactory import PageFactory
-from src.Framework.TestCase import TestCase
+from framework.page_factory import PageFactory
+from framework.test_case import TestCase
 
 
 class TestHomepage(TestCase):

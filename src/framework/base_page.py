@@ -8,9 +8,9 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
 import unittest, time, logging, os, inspect
-from .BaseLogger import BaseLogger
+from .base_logger import BaseLogger
 
-from src.Framework.DriverFactory import DriverFactory
+from framework.driver_factory import DriverFactory
 # from src.Framework.PageFactory import PageFactory
 
 

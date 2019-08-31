@@ -1,4 +1,4 @@
-from src.Pages.Homepage import Homepage
+from pages.homepage import Homepage
 
 
 class PageFactory():

@@ -7,7 +7,7 @@ from selenium.webdriver.support import expected_conditions as EC
 import allure
 from allure_commons.types import AttachmentType
 
-from src.Locators.locators import Locators
+from locators.locators import Locators
 
 
 class TestCase(unittest.TestCase):
