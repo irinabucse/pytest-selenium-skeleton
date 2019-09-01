@@ -1,3 +1,4 @@
 .idea
 /env/
 allure-report
+__pycache__
