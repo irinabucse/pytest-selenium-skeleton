@@ -39,9 +39,14 @@ class BasePage(Borg, unittest.TestCase):
     "Page class that all page models can inherit from"
     implicitly_wait = 5
 
-    def __init__(self, base_url, trailing_slash_flag=True):
+    def __init__(self, driver, base_url, trailing_slash_flag=True):
         "Constructor"
+        """
+        :param driver
+        :type Webdriver
+        """
         Borg.__init__(self)
+        self.driver = driver
         if self.is_first_time():
             # Do these actions if this the first time this class is initialized
             self.set_directory_structure()
@@ -50,16 +55,18 @@ class BasePage(Borg, unittest.TestCase):
             self.current_console_log_errors = []
             self.window_structure = {}
             self.images = []
-
             self.reset()
 
         # We assume relative URLs start without a / in the beginning
         if base_url[-1] != '/' and trailing_slash_flag is True:
             base_url += '/'
         self.base_url = base_url
-        self.driver_obj = DriverFactory()
+        # self.driver_obj = DriverFactory()
         if self.driver is not None:
             self.start()  # Visit and initialize xpaths for the appropriate page
+        self.testname = self.get_calling_module()
+        self.exceptions = []
+        self.set_log_file()
 
     def reset(self):
         "Reset the base page object"
@@ -283,16 +290,18 @@ class BasePage(Borg, unittest.TestCase):
         "Return the DOM element of the path or 'None' if the element is not found "
         dom_element = None
         try:
-            locator = self.split_locator(locator)
             dom_element = self.driver.find_element(*locator)
         except Exception as e:
             if verbose_flag is True:
                 self.write(str(e), 'debug')
-                self.write("Check your locator-'%s,%s' in the conf/locators.conf file" % (locator[0], locator[1]))
             self.exceptions.append(
                 "Check your locator-'%s,%s' in the conf/locators.conf file" % (locator[0], locator[1]))
 
         return dom_element
+
+    def get_page_source(self):
+        "Return the page source "
+        return self.driver.page_source
 
     def split_locator(self, locator):
         "Split the locator type and locator"
@@ -310,7 +319,7 @@ class BasePage(Borg, unittest.TestCase):
         "Return a list of DOM elements that match the locator"
         dom_elements = []
         try:
-            locator = self.split_locator(locator)
+            # locator = self.split_locator(locator)
             dom_elements = self.driver.find_elements(*locator)
         except Exception as e:
             if msg_flag == True:
@@ -373,8 +382,6 @@ class BasePage(Borg, unittest.TestCase):
             text = self.get_element(locator).text
         except Exception as e:
             self.write(e)
-            self.exceptions.append(
-                "Error when getting text from the path-'%s' in the conf/locators.conf file" % locator)
             return None
         else:
             return text.encode('utf-8')
@@ -501,15 +508,10 @@ class BasePage(Borg, unittest.TestCase):
         action_obj.perform()
         self.wait(wait_seconds)
 
-    def teardown(self):
-        "Tears down the driver"
-        self.driver.quit()
-        self.reset()
-
     def write(self, msg, level='info'):
         "Log the message"
         msg = str(msg)
-        self.msg_list.append('%-8s:  ' % level.upper() + msg)
+        # self.msg_list.append('%-8s:  ' % level.upper() + msg)
         self.log_obj.write(msg, level)
 
     def wait(self, wait_seconds=5, locator=None):
@@ -533,30 +535,6 @@ class BasePage(Borg, unittest.TestCase):
                                        locator, wait_seconds))
 
         return result_flag
-
-    def success(self, msg, level='info', pre_format='PASS: '):
-        "Write out a success message"
-        if level.lower() == 'critical':
-            level = 'info'
-        self.log_obj.write(pre_format + msg, level)
-        self.result_counter += 1
-        self.pass_counter += 1
-
-    def failure(self, msg, level='info', pre_format='FAIL: '):
-        "Write out a failure message"
-        self.log_obj.write(pre_format + msg, level)
-        self.result_counter += 1
-        self.failure_message_list.append(pre_format + msg)
-        if level.lower() == 'critical':
-            self.teardown()
-            raise Exception("Stopping test because: " + msg)
-
-    def log_result(self, flag, positive, negative, level='info'):
-        "Write out the result of the test"
-        if flag is True:
-            self.success(positive, level=level)
-        else:
-            self.failure(negative, level=level)
 
     def read_browser_console_log(self):
         "Read Browser Console log"
@@ -587,26 +565,6 @@ class BasePage(Borg, unittest.TestCase):
             result_flag = False
 
         return result_flag
-
-    def write_test_summary(self):
-        "Print out a useful, human readable summary"
-        self.write(
-            '\n\n************************\n--------RESULT--------\nTotal number of checks=%d' % self.result_counter)
-        self.write(
-            'Total number of checks passed=%d\n----------------------\n************************\n\n' % self.pass_counter)
-        self.write('Total number of mini-checks=%d' % self.mini_check_counter)
-        self.write('Total number of mini-checks passed=%d' % self.mini_check_pass_counter)
-        failure_message_list = self.get_failure_message_list()
-        if len(failure_message_list) > 0:
-            self.write('\n--------FAILURE SUMMARY--------\n')
-            for msg in failure_message_list:
-                self.write(msg)
-        if len(self.exceptions) > 0:
-            self.exceptions = list(set(self.exceptions))
-            self.write('\n--------USEFUL EXCEPTION--------\n')
-            for (i, msg) in enumerate(self.exceptions, start=1):
-                self.write(str(i) + "- " + msg)
-        self.write('************************')
 
     def start(self):
         "Overwrite this method in your Page module if you want to visit a specific URL"
