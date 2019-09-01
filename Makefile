@@ -1,5 +1,3 @@
-all:
-	source env/bin/activate
 run:
 	@echo "Running tests"
 	pytest ./src/tests/ --alluredir=./results
