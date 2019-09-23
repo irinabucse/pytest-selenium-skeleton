@@ -18,8 +18,10 @@ class TestCase(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
-        selenium_hub_url = os.getenv('SELENIUM_HUB_URL', 'http://127.0.0.1:4444/wd/hub')
-        cap = {'browserName': 'chrome', 'javascriptEnabled': True}
+        selenium_hub_url = os.getenv('SELENIUM_HUB_URL')
+        browser = os.getenv('BROWSER', 'chrome')
+
+        cap = {'browserName': browser, 'javascriptEnabled': True}
         cls.driver = webdriver.Remote(
             command_executor=selenium_hub_url,
             desired_capabilities=cap)
