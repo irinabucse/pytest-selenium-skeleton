@@ -384,7 +384,8 @@ class BasePage(Borg, unittest.TestCase):
             self.write(e)
             return None
         else:
-            return text.encode('utf-8')
+            # return text.encode('utf-8')
+            return text
 
     def get_dom_text(self, dom_element):
         "Return the text of a given DOM element or the 'None' object if the element has no attribute called text"

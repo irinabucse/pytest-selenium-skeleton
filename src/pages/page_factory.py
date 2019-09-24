@@ -1,4 +1,4 @@
-from pages.homepage import Homepage
+from pages.page_example import PageExample
 
 
 class PageFactory():
@@ -10,8 +10,8 @@ class PageFactory():
         test_obj = None
         page_name = page_name.lower()
         print("PageName: %s" % page_name)
-        if page_name == "homepage":
-            test_obj = Homepage(driver=driver, base_url=base_url,trailing_slash_flag=trailing_slash_flag)
+        if page_name == "page_example":
+            test_obj = PageExample(driver=driver, base_url=base_url,trailing_slash_flag=trailing_slash_flag)
         # elif page_name == "redirect":
         #     test_obj = Redirect_Page(base_url=base_url, trailing_slash_flag=trailing_slash_flag)
 
